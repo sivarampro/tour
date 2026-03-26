@@ -6,6 +6,7 @@ import './Home.css';
 const Home = () => {
   const scrollRef = useRef(null);
   const isHovered = useRef(false);
+  const isInteracting = useRef(false);
 
   useEffect(() => {
     const container = scrollRef.current;
@@ -15,7 +16,7 @@ const Home = () => {
     let autoScrollSpeed = 1;
 
     const scrollStep = () => {
-      if (!isHovered.current) {
+      if (!isHovered.current && !isInteracting.current) {
         container.scrollLeft += autoScrollSpeed;
         
         if (container.scrollLeft >= container.scrollWidth / 2) {
@@ -29,20 +30,22 @@ const Home = () => {
     return () => cancelAnimationFrame(animationId);
   }, []);
 
-  const scrollPrev = () => {
+  const handleManualScroll = (direction) => {
     if (scrollRef.current) {
-      if (scrollRef.current.scrollLeft <= 0) {
+      isInteracting.current = true;
+      if (direction === 'prev' && scrollRef.current.scrollLeft <= 0) {
         scrollRef.current.scrollLeft = scrollRef.current.scrollWidth / 2;
       }
-      scrollRef.current.scrollBy({ left: -410, behavior: 'smooth' });
+      scrollRef.current.scrollBy({ left: direction === 'prev' ? -410 : 410, behavior: 'smooth' });
+      
+      setTimeout(() => {
+        isInteracting.current = false;
+      }, 600);
     }
   };
 
-  const scrollNext = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: 410, behavior: 'smooth' });
-    }
-  };
+  const scrollPrev = () => handleManualScroll('prev');
+  const scrollNext = () => handleManualScroll('next');
 
   const testimonials = [
     {
@@ -117,16 +120,9 @@ const Home = () => {
             <Link to="/explore" className="btn-gold">Explore All</Link>
             <Link to="/contact" className="btn-outline">Contact Us</Link>
           </div>
-        </div>
-        
-        <div className="happy-customers animate-fade-in delay-3">
-          <div className="customer-avatars">
-            <div className="avatar" style={{ backgroundImage: "url('/images/user1.png')" }}></div>
-            <div className="avatar" style={{ backgroundImage: "url('/images/user2.png')" }}></div>
-            <div className="avatar" style={{ backgroundImage: "url('/images/user3.png')" }}></div>
-          </div>
-          <div className="customer-text">
-            <strong>1000+</strong> <br /> Happy Customers
+
+          <div className="happy-customers-simple animate-fade-in delay-3">
+            <span className="gold-text fw-bold">1000+</span> Happy Customers
           </div>
         </div>
 
