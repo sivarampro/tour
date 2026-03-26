@@ -89,6 +89,22 @@
   border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+.developer-credit {
+  margin-top: 10px;
+  font-size: 0.85rem;
+}
+
+.developer-credit a {
+  color: var(--gold-primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.developer-credit a:hover {
+  color: #fff;
+}
+
 @media (max-width: 968px) {
   .footer-grid {
     grid-template-columns: 1fr 1fr;

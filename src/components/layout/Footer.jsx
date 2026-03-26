@@ -51,6 +51,7 @@ const Footer = () => {
       
       <div className="footer-bottom border-top">
         <p>&copy; {new Date().getFullYear()} Wright My Trip. All rights reserved.</p>
+        <p className="developer-credit">Developed by <a href="https://creinx.com" target="_blank" rel="noopener noreferrer">creinx</a></p>
       </div>
     </footer>
   );
