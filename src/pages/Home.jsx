@@ -1,9 +1,49 @@
-import { useState } from 'react';
+import { useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, Users, MapPin, Search, Shield, Star, Clock, DollarSign, Heart, ChevronRight, ChevronLeft } from 'lucide-react';
 import './Home.css';
 
 const Home = () => {
+  const scrollRef = useRef(null);
+  const isHovered = useRef(false);
+
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    let animationId;
+    let autoScrollSpeed = 1;
+
+    const scrollStep = () => {
+      if (!isHovered.current) {
+        container.scrollLeft += autoScrollSpeed;
+        
+        if (container.scrollLeft >= container.scrollWidth / 2) {
+          container.scrollLeft = 0;
+        }
+      }
+      animationId = requestAnimationFrame(scrollStep);
+    };
+
+    animationId = requestAnimationFrame(scrollStep);
+    return () => cancelAnimationFrame(animationId);
+  }, []);
+
+  const scrollPrev = () => {
+    if (scrollRef.current) {
+      if (scrollRef.current.scrollLeft <= 0) {
+        scrollRef.current.scrollLeft = scrollRef.current.scrollWidth / 2;
+      }
+      scrollRef.current.scrollBy({ left: -410, behavior: 'smooth' });
+    }
+  };
+
+  const scrollNext = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: 410, behavior: 'smooth' });
+    }
+  };
+
   const testimonials = [
     {
       name: "Eleanor Sterling",
@@ -79,6 +119,17 @@ const Home = () => {
           </div>
         </div>
         
+        <div className="happy-customers animate-fade-in delay-3">
+          <div className="customer-avatars">
+            <div className="avatar" style={{ backgroundImage: "url('/images/user1.png')" }}></div>
+            <div className="avatar" style={{ backgroundImage: "url('/images/user2.png')" }}></div>
+            <div className="avatar" style={{ backgroundImage: "url('/images/user3.png')" }}></div>
+          </div>
+          <div className="customer-text">
+            <strong>1000+</strong> <br /> Happy Customers
+          </div>
+        </div>
+
         <div className="scroll-indicator">
           <span>Scroll</span>
           <div className="scroll-line"></div>
@@ -244,7 +295,17 @@ const Home = () => {
           </div>
           
           <div className="testimonial-carousel">
-            <div className="testimonial-track">
+            <button className="carousel-btn prev" onClick={scrollPrev}>
+              <ChevronLeft size={24} />
+            </button>
+
+            <div 
+              className="testimonial-viewport" 
+              ref={scrollRef}
+              onMouseEnter={() => { isHovered.current = true; }}
+              onMouseLeave={() => { isHovered.current = false; }}
+            >
+              <div className="testimonial-track">
               {/* Group 1 */}
               <div className="testimonial-group">
                 {testimonials.map((t, idx) => (
@@ -281,6 +342,11 @@ const Home = () => {
                 ))}
               </div>
             </div>
+          </div>
+
+          <button className="carousel-btn next" onClick={scrollNext}>
+              <ChevronRight size={24} />
+            </button>
           </div>
         </div>
       </section>
